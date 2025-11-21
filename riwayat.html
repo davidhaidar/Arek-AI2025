@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Riwayat Refleksi - SMKN 1 Sumberasih</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050816;
+    --glass: rgba(255,255,255,0.05);
+    --accent:#7c3aed;
+  }
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:"Poppins",system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    background: linear-gradient(135deg,#020617,#12042f,#2b0246);
+    color:#f8fafc;
+    padding:36px;
+    display:flex;
+    justify-content:center;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:980px;
+  }
+
+  header{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-bottom:18px;
+  }
+
+  .logo-mini{
+    width:64px;
+    height:64px;
+    border-radius:12px;
+    background: rgba(255,255,255,0.03);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid rgba(255,255,255,0.04);
+  }
+  .logo-mini img{ max-width:78%; max-height:78%; }
+
+  header h1{
+    margin:0;
+    font-size:22px;
+    color:#fff;
+  }
+  header p{ margin:0; color:rgba(255,255,255,0.6) }
+
+  .list{
+    margin-top:14px;
+    display:grid;
+    gap:18px;
+  }
+
+  /* floating card style */
+  .entry{
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border-radius:16px;
+    padding:18px;
+    border-left:6px solid rgba(124,58,237,0.9);
+    box-shadow: 0 18px 50px rgba(2,6,23,0.6);
+    transform-style:preserve-3d;
+    transition: transform .28s cubic-bezier(.22,.9,.3,1);
+    position:relative;
+  }
+
+  .entry:hover{ transform: translateY(-8px) rotateX(2deg); }
+
+  .meta{
+    font-size:13px;
+    color:rgba(255,255,255,0.7);
+    margin-bottom:8px;
+  }
+
+  .text{
+    font-size:15px;
+    color:#f8fafc;
+    line-height:1.4;
+  }
+
+  .empty{
+    text-align:center;
+    padding:40px 20px;
+    color:rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.02);
+    border-radius:12px;
+  }
+
+  .controls{
+    display:flex;
+    gap:8px;
+    margin-top:18px;
+    justify-content:flex-end;
+  }
+
+  .btn{
+    padding:10px 12px;
+    border-radius:10px;
+    background: rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.03);
+    color: #fff;
+    cursor:pointer;
+    font-weight:600;
+  }
+
+  .btn-danger{
+    background: linear-gradient(90deg,#ff7ab6,#ffb4c4);
+    color:#210014;
+    border:none;
+  }
+
+  footer{ margin-top:22px; color:rgba(255,255,255,0.6); text-align:center; font-size:13px; }
+
+  @media (max-width:640px){
+    .logo-mini{ width:52px; height:52px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo-mini">
+        <img id="logoSmall" src="logosmk1.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect width=%22100%22 height=%22100%22 fill=%22%237c3aed%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22white%22 font-size=%2230%22 font-family=%22Poppins%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22>SMK1</text></svg>';">
+      </div>
+      <div>
+        <h1>Riwayat Refleksi Guru — SMKN 1 Sumberasih</h1>
+        <p>Refleksi tersimpan di perangkat ini</p>
+      </div>
+    </header>
+
+    <div class="controls">
+      <button class="btn" id="btnBack"> <a href="refleksi.html">⬅balek nang halaman refleksi</a> </button>
+      <button class="btn btn-danger" id="btnClear">🗑 Hapus Kabeh</button>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <footer>Made with ❤️ for SMKN 1 Sumberasih.</footer>
+  </div>
+  
+
+
+<script>
+  function loadList(){
+    const arr = JSON.parse(localStorage.getItem('refleksi3D') || '[]');
+    const list = document.getElementById('list');
+    list.innerHTML = '';
+    if(arr.length === 0){
+      const e = document.createElement('div');
+      e.className='empty';
+      e.innerHTML = '<strong>Durung onok  refleksi.</strong><div style="margin-top:8px;color:rgba(255,255,255,0.6)">Kembali ke halaman refleksi untuk menambahkan.</div>';
+      list.appendChild(e);
+      return;
+    }
+
+    arr.forEach((it,idx)=>{
+      const card = document.createElement('div');
+      card.className='entry';
+      const time = new Date(it.time);
+      const waktu = time.toLocaleString();
+      card.innerHTML = `<div class="meta">${waktu}</div><div class="text">${escapeHtml(it.text)}</div>`;
+      list.appendChild(card);
+    });
+  }
+
+  function escapeHtml(s){
+    return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+  }
+
+  document.getElementById('btnBack').addEventListener('click', ()=>{ window.location.href='refleksi.html'; });
+  document.getElementById('btnClear').addEventListener('click', ()=>{
+    if(!confirm('Hapus semua riwayat refleksi?')) return;
+    localStorage.removeItem('refleksi3D');
+    loadList();
+  });
+
+  loadList();
+</script>
+</body>
+</html>       
